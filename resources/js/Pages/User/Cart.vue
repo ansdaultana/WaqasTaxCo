@@ -14,7 +14,7 @@ defineOptions({
     <Head title="Dashboard" />
 
     <div class=" items-center h-screen w-auto bg-slate-50 m-10 rounded-lg">
-       <Services/>
+       <!-- <Services/> -->
        
     </div>
 </template>

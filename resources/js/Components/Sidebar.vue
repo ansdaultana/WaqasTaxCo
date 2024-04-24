@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import MenuItemSidebar from './MenuItemSidebar.vue';
 import SubItem from './SubItem.vue'
-import { gotoNewProduct,gotoVendorProducts } from '@/Navigation';
+/* import { gotoNewProduct,gotoVendorProducts } from '@/Navigation'; */
 
 const ProductMenu = ref(false)
 </script>
@@ -30,7 +30,7 @@ const ProductMenu = ref(false)
             </MenuItemSidebar>
             <div v-if="ProductMenu" @mouseenter="ProductMenu = true" @mouseleave="ProductMenu = false"
                 class="duration-300 ease-in-out transition-opacity text-sm">
-                <SubItem @click.prevent="gotoNewProduct">
+                <SubItem >
                     <div class="text-sm">
                         <span class="hidden md:block">
                             Add Product
@@ -40,7 +40,7 @@ const ProductMenu = ref(false)
                         </span>
                     </div>
                 </SubItem>
-                <SubItem @click.prevent="gotoVendorProducts">
+                <SubItem >
                     <div class="text-sm">
 
                         <span class="hidden md:block">

@@ -52,7 +52,7 @@ const ToggleopenAccountMenu = () => {
                                     <span class="p-2 text-white text-xl"
                                         v-text="user.name.charAt(0).toUpperCase()"></span>
                                 </div>
-                                <div class="p-1 w-20 text-gray-800 ">
+                                <div class="p-1 w-20 text-gray-800 md:w-24">
                                     <span v-text="user.name.charAt(0).toUpperCase() + user.name.slice(1)"></span>
                                 </div>
                                 <div
@@ -63,7 +63,7 @@ const ToggleopenAccountMenu = () => {
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                       </svg>
                                       
-                                    <span class="w-28"> Account Setting</span>
+                                    <span class="w-14 md:w-28"> Account Setting</span>
                                 </div>
                                 <div class="p-2 hover:text-red-400 cursor-pointer" @click.prevent="logout">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

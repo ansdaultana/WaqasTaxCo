@@ -27,8 +27,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'cnic',
-        'phone_no',
     ];
 
     /**
@@ -60,4 +58,14 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function ntn()
+    {
+        return $this->hasOne(NTN::class);
+    }
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
 }

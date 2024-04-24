@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\NTNController;
 use App\Http\Controllers\UserDashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -39,3 +41,12 @@ Route::middleware('auth')->prefix('/user')->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
 });
 
+Route::middleware('auth')->prefix('/user/dashboard')->group(function () {
+    
+    // ntn
+    Route::get('/ntn-index', [NTNController::class, 'index']);
+    Route::post('/ntn-register', [NTNController::class, 'register']);
+
+    // cart
+    Route::get('/cart-index',[CartController::class,'index'])->name('user.cart');
+});
