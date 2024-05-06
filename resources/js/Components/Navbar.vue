@@ -19,14 +19,14 @@ const ToggleopenAccountMenu = () => {
 <template>
     <div>
         <div
-            class="flex justify-between w-full p-2  items-center text-xs md:text-sm  rounded-xxl bg-slate-100 rounded-b-md">
+            class="cursor-pointer flex justify-between w-full p-2  items-center text-xs md:text-sm  rounded-xxl bg-slate-100 rounded-b-md">
             <div class="flex justify-between  w-auto p-2" @click="gotoHome">
 
                 <span class="font-extrabold text-2xl text-blue-500">Waqas</span>
-                <span class="text-2xl ml-1"> Tax</span>
+                <span class="text-2xl ml-1"> &</span>
 
-                <span class="text-2xl text-blue-500 ml-1">&</span>
-                <span class="text-2xl ml-1"> Co</span>
+                <span class="ml-1 font-extrabold text-2xl text-blue-500">Co</span>
+
                 <div class="  font-bold">
 
                 </div>

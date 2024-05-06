@@ -46,6 +46,8 @@ Route::middleware('auth')->prefix('/user/dashboard')->group(function () {
     // ntn
     Route::get('/ntn-index', [NTNController::class, 'index']);
     Route::post('/ntn-register', [NTNController::class, 'register']);
+    Route::post('/ntn-edit/{id}', [NTNController::class, 'edit']);
+
 
     // cart
     Route::get('/cart-index',[CartController::class,'index'])->name('user.cart');

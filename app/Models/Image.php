@@ -14,5 +14,11 @@ class Image extends Model
     {
         return $this->belongsTo(NTN::class);
     }
+    public function getUrl()
+    {
+        $path = $this->path;
 
+        $url = url('storage/' . $path);
+        return $url;
+    }
 }

@@ -18,7 +18,13 @@ const props = defineProps({
 });
 const emit = defineEmits(['deleteImage']);
 const RemoveThisImage = () => {
+   
+    if (props.id) {
+        emit('deleteImageInBackend', { url: props.url, index: props.index, id: props.id });
+    }
+    else {
         emit('deleteImage', { url: props.url, index: props.index });
+    }
 }
 
 </script>

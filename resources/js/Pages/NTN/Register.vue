@@ -2,19 +2,26 @@
 import Services from '../User/Services.vue';
 import UploadImageButton from '@/Components/UploadImageButton.vue';
 import ImageBox from '@/Components/ImageBox.vue';
-import { ref } from 'vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import userlayout from '@/Layouts/User/Layout.vue';
 defineOptions({
     layout: userlayout,
 });
+
+const page = usePage()
+const mode = page.props.mode
+const ntn = computed(() => page.props.ntn)
+
 const acceptedImageTypes = ['image/jpeg', 'image/png'];
 
 const form = useForm({
     images: [],
+    deletedImages: []
 })
 const fileInput = ref(null);
 const ImagesViewLocal = ref([]);
+const ImagesViewLocalGivenByBackend = ref([]);
 const ImagesError = ref('');
 
 const handleButtonClick = () => {
@@ -25,6 +32,22 @@ const RemoveImage = (data) => {
     ImagesViewLocal.value = ImagesViewLocal.value.filter(image => image.url !== data.url);
 
 }
+
+const RemoveImageFromBackend = (data) => {
+    ImagesViewLocalGivenByBackend.value = ImagesViewLocalGivenByBackend.value.filter(image => image.url !== data.url);
+    form.deletedImages.push(data.id);
+    console.log(data);
+}
+
+if (mode === 'Edit') {
+    if (page.props.ntn.hasImages) {
+        if (page.props.ntn.hasImages) {
+            ImagesViewLocalGivenByBackend.value = page.props.ntn.encoded_images.map(image => ({ url: image.link, id: image.id }));
+            console.log(ImagesViewLocalGivenByBackend.value)
+        }
+    }
+
+}
 const ImagesUpload = () => {
     const files = fileInput.value.files;
 
@@ -32,7 +55,7 @@ const ImagesUpload = () => {
         if (acceptedImageTypes.includes(file.type)) {
             const imageUrl = URL.createObjectURL(file);
 
-            if (ImagesViewLocal.value.length < 2) {
+            if (ImagesViewLocal.value.length + ImagesViewLocalGivenByBackend.value.length < 2) {
                 ImagesViewLocal.value.push({ url: imageUrl });
                 form.images.push(file);
             } else {
@@ -45,23 +68,44 @@ const ImagesUpload = () => {
     }
 };
 const submitForm = () => {
-    if (form.images.length < 2) {
+
+    if (form.images.length + ImagesViewLocalGivenByBackend.value.length < 2) {
         ImagesError.value = 'Please Add at least 2 pictures.';
     } else {
-        form.transform(data => ({
-            ...data,
-        })).post('/user/dashboard/ntn-register')
-        .then(() => {
-            // Reset the images field and clear the error message after form submission
-            form.reset('images');
-            ImagesViewLocal.value = [];
-            ImagesError.value = '';
-        })
-        .catch((error) => {
-            // Handle error if form submission fails
-            console.error('Form submission error:', error);
-            // You can also set an error message here if needed
-        });
+        if (mode === 'Edit') {
+            form.transform(data => ({
+                ...data,
+            })).post(`/user/dashboard/ntn-edit/${ntn.value.id}`)
+                .then(() => {
+                    // Reset the images field and clear the error message after form submission
+                    form.reset('images');
+                    ImagesViewLocal.value = [];
+                    ImagesError.value = '';
+                })
+                .catch((error) => {
+                    // Handle error if form submission fails
+                    console.error('Form submission error:', error);
+                    // You can also set an error message here if needed
+                });
+
+        }
+        else {
+            form.transform(data => ({
+                ...data,
+            })).post('/user/dashboard/ntn-register')
+                .then(() => {
+                    // Reset the images field and clear the error message after form submission
+                    form.reset('images');
+                    ImagesViewLocal.value = [];
+                    ImagesError.value = '';
+                })
+                .catch((error) => {
+                    // Handle error if form submission fails
+                    console.error('Form submission error:', error);
+                    // You can also set an error message here if needed
+                });
+
+        }
     }
 };
 </script>
@@ -122,6 +166,10 @@ const submitForm = () => {
                         <div class="mt-2">
                             <!-- <InputLabel for="Images" value="Images"></InputLabel> -->
                             <div class="flex gap-x-2">
+                                <div v-for="(image, index) in ImagesViewLocalGivenByBackend" :key="index">
+                                    <ImageBox v-if="mode === 'Edit'" :url="image.url" :index="index" :id="image.id"
+                                        @deleteImage="RemoveImage" @deleteImageInBackend="RemoveImageFromBackend" />
+                                </div>
 
                                 <div v-for="(image, index) in ImagesViewLocal" :key="index">
                                     <ImageBox :url="image.url" :index="index" @deleteImage="RemoveImage" />
