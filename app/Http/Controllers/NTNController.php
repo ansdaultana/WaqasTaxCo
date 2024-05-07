@@ -133,8 +133,7 @@ class NTNController extends Controller
     
         // Process deleted images
         
-    
-        return response()->redirectTo(route('user.dashboard'));
+        return redirect()->route('user.cart');
     }
     
 }

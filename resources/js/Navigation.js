@@ -23,4 +23,7 @@ const gotoCardsRequiredUrl=(url)=>{
     router.get(`/user/dashboard/${url}`);
 }
 
-export { gotoSignIn,  gotoRegister,gotoHome,logout,gotoCardsRequiredUrl };
+const gotoDashboard=()=>{
+    router.get('/user/dashboard');
+}
+export { gotoSignIn,  gotoRegister,gotoHome,logout,gotoCardsRequiredUrl,gotoDashboard };

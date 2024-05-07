@@ -51,4 +51,6 @@ Route::middleware('auth')->prefix('/user/dashboard')->group(function () {
 
     // cart
     Route::get('/cart-index',[CartController::class,'index'])->name('user.cart');
+    Route::post('/cart/delete-item/{id}',[CartController::class,'delete']);
+
 });
