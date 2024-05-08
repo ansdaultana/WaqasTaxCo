@@ -175,7 +175,7 @@ const submitForm = () => {
                                     <ImageBox :url="image.url" :index="index" @deleteImage="RemoveImage" />
                                 </div>
                                 <input class="hidden" type="file" ref="fileInput" @change="ImagesUpload" multiple>
-                                <UploadImageButton @click.prevent="handleButtonClick" />
+                                <UploadImageButton v-if="form.images.length<2" @click.prevent="handleButtonClick" />
 
                             </div>
                             <div class="text-xs text-red-500">

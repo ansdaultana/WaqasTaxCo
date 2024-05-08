@@ -12,4 +12,12 @@ const deleteCartItem=(id,item)=>{
       });
   };
 
-export { deleteCartItem,  };
+    const CalculateSalaryTax = async (MonthlySalary) => {
+      const response = await fetch(`/user/dashboard/salary-tax-calculate?salary=${MonthlySalary}`);
+      if (!response.ok) {
+          throw new Error('Failed to fetch tax data');
+      }
+      const { MonthlytaxAmount, YearlytaxAmount } = await response.json();
+      return { MonthlytaxAmount, YearlytaxAmount };
+  }
+export { deleteCartItem,  CalculateSalaryTax};

@@ -27,7 +27,7 @@ const deleteItem=(data)=>
 
 <template>
 
-    <Head title="Dashboard" />
+    <Head title="Check Out" />
 
     <div class=" items-center h-auto w-auto bg-slate-100 m-2 md:my-10 md:mx-20 p-5 md:p-10 rounded-lg" :class="{ 'h-96': isEmpty }">
 
