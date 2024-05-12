@@ -20,4 +20,12 @@ const deleteCartItem=(id,item)=>{
       const { MonthlytaxAmount, YearlytaxAmount } = await response.json();
       return { MonthlytaxAmount, YearlytaxAmount };
   }
-export { deleteCartItem,  CalculateSalaryTax};
+  const FindNTN = async (cnic) => {
+    const response = await fetch(`/user/dashboard/find-ntn?cnic=${cnic}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch tax data');
+    }
+    const {Data } = await response.json();
+    return {Data};
+}
+export { deleteCartItem,  CalculateSalaryTax, FindNTN};

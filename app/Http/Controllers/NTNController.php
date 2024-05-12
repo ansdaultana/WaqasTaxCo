@@ -135,5 +135,29 @@ class NTNController extends Controller
         
         return redirect()->route('user.cart');
     }
+
+    public function finder_index()
+    {
+
+        return Inertia::render('NTN/Finder');
+    }
+
+    public function Ntn_find(Request $request)
+    {
+        // $cnic = $request->input('cnic');
+        $data = [
+            'Name' => 'Ans',
+            'Registration_No' => '6433213123',
+            'Reference_No' => '6233321-8',
+            'STRN' => 'No',
+            'Category' => 'Pakistani Male',
+            'Registered_On' => '07-FEB-2020',
+            'Tax_Office' => 'RTO BAHAWALNAGAR',
+            'Registration_Status' => 'Income Tax: Active',
+            'Address' => '16, Street # 1, Bahawalpur Road, Hasilpur (Old), Bahawalpur, Hasilpur.16, Street # 1, Bahawalpur Road, Hasilpur (Old), Bahawalpur, Hasilpur.'
+        ];
+    
+        return response()->json(['Data' => $data]);
+    }
     
 }

@@ -1,12 +1,10 @@
 <script setup>
 import userlayout from '@/Layouts/User/Layout.vue';
-import CartItem from '@/Components/CartItem.vue'
-import { computed, ref } from 'vue';
+import {ref } from 'vue';
 import { Head, usePage } from '@inertiajs/vue3';
 import { CalculateSalaryTax } from '@/ActionsApi.js'
 import { watch } from 'vue';
 
-const page = usePage()
 defineOptions({
     layout: userlayout,
 });
@@ -38,7 +36,7 @@ watch(MonthlySalary, () => {
 
     <Head title="Salary Calculator" />
 
-    <div class=" items-center h-auto w-auto bg-slate-100 m-2 md:my-10 md:mx-20 p-5 md:p-10 rounded-lg"
+    <div class=" items-center h-auto w-auto bg-slate-100 m-2 md:my-6 md:mx-20 p-5 md:p-10 rounded-lg"
         :class="{ 'h-96': isEmpty }">
 
         <div class="p-1 md:p-2">
@@ -51,20 +49,24 @@ watch(MonthlySalary, () => {
             </div>
             <div class="flex items-center justify-center">
                 <div class="md:w-1/2  bg-white mt-5 rounded-lg  p-5  shadow-md ">
-                    <div class="flex items-center justify-between p-5 text-sm md:text-lg">
-                        <div>
+                    <div class="md:flex items-center justify-between md:p-3 text-xs  md:text-lg">
+                        <div class="p-2 md:p-0 text-blue-500 font-bold">
                             Enter Your Monthly Salary
                         </div>
+                        <div class="flex">
+
                         <div>
-                            <input v-model="MonthlySalary" class="rounded-lg border w-32 mx-2 border-gray-400" type="text" placeholder="i.e 70000">
+                            <input v-model="MonthlySalary" class="rounded-lg border w-32 mx-2 mt-2 border-gray-400" type="text" placeholder="i.e 70000">
                         </div>
+                        <div class="flex items-center justify-end">
+                            <button @click.prevent="Calculate" :disabled="!MonthlySalary"
+                                class="bg-blue-500 items-center p-3 md:p-2 rounded-lg text-white hover:scale-103 transition-transform duration-200 ease-in-out cursor-pointer m-2 mr-2 hover:bg-blue-600 ">
+                                Calculate
+                            </button>
+                        </div>
+    
                     </div>
-                    <div class="flex items-center justify-end">
-                        <button @click.prevent="Calculate" :disabled="!MonthlySalary"
-                            class="bg-blue-500 items-center p-2 rounded-lg text-white hover:scale-103 transition-transform duration-200 ease-in-out cursor-pointer mr-5 hover:bg-blue-600 ">
-                            Calculate
-                        </button>
-                    </div>
+                </div>
                     <div class="border-r border-l border-b  border-gray-200 mt-2">
                         <div class="bg-slate-100 p-2 ">
                             Details
@@ -76,7 +78,7 @@ watch(MonthlySalary, () => {
                             <div class="p-2 -mt-1 ">
                                 <div class="flex items-center justify-between px-5">
                                     <span>Salary</span>
-                                    <span v-text="MonthlySalary?MonthlySalary.toLocaleString():null"></span>
+                                    <span class="" v-text="MonthlySalary?parseInt(MonthlySalary).toLocaleString():null"></span>
                                     
                                 </div>
                                 <div class="flex items-center justify-between px-5">
@@ -98,7 +100,7 @@ watch(MonthlySalary, () => {
                             <div class="p-2 -mt-1 ">
                                 <div class="flex items-center justify-between px-5">
                                     <span>Salary</span>
-                                    <span v-text="MonthlySalary?(MonthlySalary*12).toLocaleString():0"></span>
+                                    <span v-text="MonthlySalary?(MonthlySalary*12).toLocaleString():null"></span>
                                     
                                 </div>
                                 <div class="flex items-center justify-between px-5">

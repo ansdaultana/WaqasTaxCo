@@ -45,7 +45,10 @@ Route::middleware('auth')->prefix('/user')->group(function () {
 Route::middleware('auth')->prefix('/user/dashboard')->group(function () {
     
     // ntn
-    Route::get('/ntn-index', [NTNController::class, 'index']);
+    Route::get('/ntn-index', [NTNController::class, 'index'])->name('ntn.index');
+    Route::get('/ntn-finder', [NTNController::class, 'finder_index'])->name('ntn.finder_index');
+    Route::get('/find-ntn', [NTNController::class, 'Ntn_find']);
+
     Route::post('/ntn-register', [NTNController::class, 'register']);
     Route::post('/ntn-edit/{id}', [NTNController::class, 'edit']);
 
