@@ -86,6 +86,7 @@ class NTNController extends Controller
                 Image::create([
                     'ntn_id' => $ntn->id,
                     'path' => $path,
+                    'what_for'=>'NTN'
                 ]);
             }
         }
@@ -127,6 +128,7 @@ class NTNController extends Controller
                 Image::create([
                     'ntn_id' => $ntn->id,
                     'path' => $path,
+                    'what_for'=>'NTN'
                 ]);
             }
         }

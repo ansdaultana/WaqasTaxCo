@@ -5,15 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Image extends Model
+class Pdf extends Model
 {
     use HasFactory;
-    protected $fillable = ['ntn_id','sole_proprietorship_id','path','what_for'];
-
-    public function ntn()
-    {
-        return $this->belongsTo(NTN::class);
-    }
+    protected $fillable = ['sole_proprietorship_id','path','what_for'];
     public function soleproprietorship()
     {
         return $this->belongsTo(SoleProprietorship::class);

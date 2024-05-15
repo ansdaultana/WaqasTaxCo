@@ -29,9 +29,9 @@ const deleteItem=(data)=>
 
     <Head title="Check Out" />
 
-    <div class=" items-center h-auto w-auto bg-slate-100 m-2 md:my-10 md:mx-20 p-5 md:p-10 rounded-lg" :class="{ 'h-96': isEmpty }">
+    <div class=" items-center h-auto w-auto bg-slate-100 m-2 md:my-5 md:mx-20 p-5 md:p-10 rounded-lg" :class="{ 'h-96': isEmpty }">
 
-        <div class="p-1 md:p-2">
+        <div class="p-1">
 
             <div class="text-blue-500 text-lg  font-bold ">
                 Check Out

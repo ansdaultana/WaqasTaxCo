@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\IncorporationController;
 use App\Http\Controllers\NTNController;
 use App\Http\Controllers\SalaryTaxCalculator;
+use App\Http\Controllers\SoleProprietorshipController;
 use App\Http\Controllers\UserDashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -60,5 +62,14 @@ Route::middleware('auth')->prefix('/user/dashboard')->group(function () {
     //salary
     Route::get('/salary-cal',[SalaryTaxCalculator::class,'index']);
     Route::get('/salary-tax-calculate',[SalaryTaxCalculator::class,'calculate']);
+
+    // incorporation
+    Route::get('/incorporation',[IncorporationController::class,'index']);
+
+    // sole proprietorship
+    Route::get('/sole-proprietorship',[IncorporationController::class,'sole_proprietorship']);
+    Route::post('/sole-proprietorship/register',[SoleProprietorshipController::class,'register'])->name('sole_proprietorship.register');
+    Route::get('/sole-proprietorship/upload-docs/{id}',[SoleProprietorshipController::class,'upload_docs_page'])->name('sole_proprietorship.upload_docs_page');
+    Route::post('/sole-proprietorship/upload-docs/{id}',[SoleProprietorshipController::class,'upload_docs']);
 
 });

@@ -26,4 +26,11 @@ const gotoCardsRequiredUrl=(url)=>{
 const gotoDashboard=()=>{
     router.get('/user/dashboard');
 }
-export { gotoSignIn,  gotoRegister,gotoHome,logout,gotoCardsRequiredUrl,gotoDashboard };
+const sole_prop_upload_docs=(id)=>
+{
+    console.log(id)
+
+    router.get(`/user/dashboard/sole-proprietorship/upload-docs/${id}`);
+
+}
+export { gotoSignIn,  gotoRegister,gotoHome,logout,gotoCardsRequiredUrl,gotoDashboard,sole_prop_upload_docs };

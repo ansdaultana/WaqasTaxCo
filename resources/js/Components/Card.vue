@@ -15,7 +15,7 @@ defineProps({
 <template>
     <div
         class="bg-white cursor-pointer shadow-sm  h-52 w-44 p-10 rounded-lg border-gray-100 border-2 transition-transform hover:scale-103 duration-200 ease-out">
-        <div class="flex items-center justify-center  text-blue-700">
+        <div class="flex items-center justify-center  text-blue-500">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-16 h-16">
                 <path stroke-linecap="round" stroke-linejoin="round"
