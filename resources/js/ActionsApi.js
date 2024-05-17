@@ -28,4 +28,13 @@ const deleteCartItem=(id,item)=>{
     const {Data } = await response.json();
     return {Data};
 }
-export { deleteCartItem,  CalculateSalaryTax, FindNTN};
+
+const deleteSoleProprietorship=(id)=>{
+
+    router.post(`/user/dashboard/sole-proprietorship/delete/${id}`)
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+};
+
+export { deleteCartItem,  CalculateSalaryTax, FindNTN,deleteSoleProprietorship};

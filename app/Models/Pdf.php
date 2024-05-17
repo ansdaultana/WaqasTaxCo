@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Pdf extends Model
 {
     use HasFactory;
-    protected $fillable = ['sole_proprietorship_id','path','what_for'];
+    protected $fillable = ['sole_proprietorship_id','path','what_for','name'];
     public function soleproprietorship()
     {
         return $this->belongsTo(SoleProprietorship::class);

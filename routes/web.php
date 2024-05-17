@@ -67,8 +67,10 @@ Route::middleware('auth')->prefix('/user/dashboard')->group(function () {
     Route::get('/incorporation',[IncorporationController::class,'index']);
 
     // sole proprietorship
-    Route::get('/sole-proprietorship',[IncorporationController::class,'sole_proprietorship']);
+    Route::get('/sole-proprietorship',[IncorporationController::class,'sole_proprietorship'])->name('sole_proprietorship.index');
     Route::post('/sole-proprietorship/register',[SoleProprietorshipController::class,'register'])->name('sole_proprietorship.register');
+    Route::post('/sole-proprietorship/delete/{id}',[SoleProprietorshipController::class,'delete']);
+
     Route::get('/sole-proprietorship/upload-docs/{id}',[SoleProprietorshipController::class,'upload_docs_page'])->name('sole_proprietorship.upload_docs_page');
     Route::post('/sole-proprietorship/upload-docs/{id}',[SoleProprietorshipController::class,'upload_docs']);
 

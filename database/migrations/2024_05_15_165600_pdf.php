@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('sole_proprietorship_id')->nullable();
             $table->string('path');
             $table->string('what_for');
+            $table->string('name')->nullable();
             $table->foreign('sole_proprietorship_id')->references('id')->on('sole_proprietorships')->onDelete('cascade');
             $table->timestamps();
         });

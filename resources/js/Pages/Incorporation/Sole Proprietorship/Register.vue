@@ -1,9 +1,11 @@
 <script setup>
 import userlayout from '@/Layouts/User/Layout.vue';
-import { ref, computed } from 'vue';
+import { ref,computed } from 'vue';
 import BlueButton from '../../../Components/BlueButton.vue';
 import { Head, usePage, useForm } from '@inertiajs/vue3';
 import { sole_prop_upload_docs } from '@/Navigation.js'
+import DeleteButton from '@/Components/DeleteButton.vue';
+import {deleteSoleProprietorship} from '@/ActionsApi';
 
 defineOptions({
     layout: userlayout,
@@ -12,7 +14,7 @@ defineOptions({
 
 const page = usePage();
 const UserDetails = page.props.UserDetails;
-const sole_proprietorships = page.props.sole_proprietorships;
+const sole_proprietorships = computed(()=>page.props.sole_proprietorships);
 const newReg = ref(page.props.newReg || false);
 const form = useForm({
     name: '',
@@ -106,18 +108,22 @@ const GotoNewSoleProp = () => {
                             </div>
                         </div>
                         <div class="my-7">
-                            <div   v-for="sole_proprietorship in sole_proprietorships">
+                            <div v-for="sole_proprietorship in sole_proprietorships">
                                 <div
                                     class="flex mt-2 md:m-4 items-center p-3  bg-slate-100 rounded-lg justify-between  transition-transform hover:scale-103 duration-300">
                                     <span v-text="sole_proprietorship['name']"></span>
-                                    <div>
+                                    <div class="flex gap-x-2">
                                         <BlueButton text="Continue"
                                             @click.prevent="gotoSoleProprietorship(sole_proprietorship['id'])" />
+                                        <div>
+                                            <DeleteButton @click.prevent="deleteSoleProprietorship(sole_proprietorship['id'])" />
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
-                      
+
                         <div class="flex items-center justify-end mt-10 ">
                             <BlueButton text="Register  New" @click.prevent="GotoNewSoleProp" />
 

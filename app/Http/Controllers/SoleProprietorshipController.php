@@ -38,31 +38,58 @@ class SoleProprietorshipController extends Controller
         if (!$SP) {
             return;
         }
-        $images=Image::where('sole_proprietorship_id',$SP->id)->get();
-        $pdfs=Pdf::where('sole_proprietorship_id',$SP->id)->get();
-        // dd($images,$pdfs);
+        $images = Image::where('sole_proprietorship_id', $SP->id)->get()->map(function ($image) {
+            $image['type'] = 'image';
+            return $image;
+        });
+        
+        $pdfs = Pdf::where('sole_proprietorship_id', $SP->id)->get()->map(function ($pdf) {
+            $pdf['type'] = 'pdf';
+            return $pdf;
+        });
         return Inertia::render(
             'Incorporation/Sole Proprietorship/UploadDocs',
             [
                 'SP' => $SP,
-                'images'=>$images,
-                'pdf'=>$pdfs
+                'images' => $images,
+                'pdfs' => $pdfs
             ]
         );
     }
-  
+
     public function upload_docs(Request $request, $id)
     {
-        $request->validate([
-            'cnic' => 'required|file|mimes:jpeg,png,pdf|max:5120', // Max size in kilobytes (5MB)
-            'letterhead' => 'required|file|mimes:jpeg,png,pdf|max:5120',
-            'utility_bill' => 'required|file|mimes:jpeg,png,pdf|max:5120',
-            'rental_agreement' => 'required|file|mimes:jpeg,png,pdf|max:5120',
-        ]);
+
+        if ($request->has('update') && $request->input('update') === false) {
+            $rules = [
+                'cnic' => 'required|file|mimes:jpeg,png,pdf|max:5120', // Max size in kilobytes (5MB)
+                'letterhead' => 'required|file|mimes:jpeg,png,pdf|max:5120',
+                'utility_bill' => 'required|file|mimes:jpeg,png,pdf|max:5120',
+                'rental_agreement' => 'required|file|mimes:jpeg,png,pdf|max:5120',
+            ];
+
+            $request->validate($rules);
+
+        }
 
         $imageFiles = [];
         $pdfFiles = [];
-
+        $deleted = [];
+        if ($request->has('deleted')) {
+            $deleted = $request->input('deleted');
+        }
+        foreach ($deleted as $key => $file) {
+            if($file['type']=='pdf')
+            {
+                $pdf = Pdf::findOrFail($file['id']);
+                $pdf->delete();
+            }
+            else
+            {
+                $image = Image::findOrFail($file['id']);
+                $image->delete();
+            }
+        }
         foreach ($request->allFiles() as $key => $file) {
             if (in_array($key, ['cnic', 'letterhead', 'utility_bill', 'rental_agreement']) && in_array($file->getClientOriginalExtension(), ['jpeg', 'jpg', 'png'])) {
                 $imageFiles[$key] = $file;
@@ -75,7 +102,8 @@ class SoleProprietorshipController extends Controller
             Image::create([
                 'sole_proprietorship_id' => $id,
                 'path' => $path,
-                'what_for' => $key
+                'what_for' => $key,
+                'name' => $file->getClientOriginalName()
             ]);
         }
         foreach ($pdfFiles as $key => $file) {
@@ -83,9 +111,29 @@ class SoleProprietorshipController extends Controller
             Pdf::create([
                 'sole_proprietorship_id' => $id,
                 'path' => $path,
-                'what_for' => $key
+                'what_for' => $key,
+                'name' => $file->getClientOriginalName()
             ]);
         }
         return redirect(route('user.dashboard'));
+    }
+
+    public function delete(Request $request,$id)
+    {
+        $SP = SoleProprietorship::findOrFail($id);
+        if (!$SP) {
+            return;
+        }
+        $images = Image::where('sole_proprietorship_id', $SP->id)->get();
+        $pdfs = Pdf::where('sole_proprietorship_id', $SP->id)->get();
+        foreach ($images as $image) {
+            $image->delete();
+        }
+        foreach ($pdfs as $pdf) {
+            $pdf->delete();
+        }
+        $SP->delete();
+        return redirect(route('sole_proprietorship.index'));
+        
     }
 }

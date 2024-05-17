@@ -6,24 +6,114 @@ import { Head, usePage, useForm } from '@inertiajs/vue3';
 defineOptions({
     layout: userlayout,
 });
+
+
+const page = usePage();
+const SP = page.props.SP;
+const images = computed(() => page.props.images)
+const pdfs = computed(() => page.props.pdfs)
+const deleted = ref(null)
+const Error = ref('');
+
 const form = useForm({
     cnic: null,
     letterhead: null,
     utility_bill: null,
     rental_agreement: null,
+    deleted:[],
+    update:images.value.length > 0 || pdfs.value.length > 0  ? true : false
 });
 
-const page=usePage();
-const SP=page.props.SP;
-const images=computed(()=>page.props.images)
-const pdfs=computed(()=>page.props.pdfs)
-const Error=ref('');
+if (images) {
+    for (let index = 0; index < images.value.length; index++) {
+        const element = images.value[index];
+
+        if (element.what_for === 'cnic') {
+            form.cnic = {
+                name: element.name,
+                id: element.id,
+                what_for: element.what_for,
+                type:element.type
+            };
+        }
+
+        if (element.what_for === 'letterhead') {
+            form.letterhead = {
+                name: element.name,
+                id: element.id,
+                what_for: element.what_for,
+                type:element.type
+            };
+        }
+
+        if (element.what_for === 'utility_bill') {
+            form.utility_bill = {
+                name: element.name,
+                id: element.id,
+                what_for: element.what_for,
+                type:element.type
+            };
+        }
+
+        if (element.what_for === 'rental_agreement') {
+            form.rental_agreement = {
+                name: element.name,
+                id: element.id,
+                what_for: element.what_for,
+                type:element.type
+            };
+        }
+
+    }
+}
+if (pdfs) {
+    for (let index = 0; index < pdfs.value.length; index++) {
+        const element = pdfs.value[index];
+
+        if (element.what_for === 'cnic') {
+            form.cnic = {
+                name: element.name,
+                id: element.id,
+                what_for: element.what_for,
+                type:element.type
+            };
+        }
+
+        if (element.what_for === 'letterhead') {
+            form.letterhead = {
+                name: element.name,
+                id: element.id,
+                what_for: element.what_for,
+                type:element.type
+            };
+        }
+
+        if (element.what_for === 'utility_bill') {
+            form.utility_bill = {
+                name: element.name,
+                id: element.id,
+                what_for: element.what_for,
+                type:element.type
+            };
+        }
+
+        if (element.what_for === 'rental_agreement') {
+            form.rental_agreement = {
+                name: element.name,
+                id: element.id,
+                what_for: element.what_for,
+                type:element.type
+            };
+        }
+
+    }
+}
 const MAX_FILE_SIZE_MB = 2; // Maximum file size allowed in MB
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'application/pdf']; // Allowed file types
 
 const handleFileChange = (event, fieldName) => {
     const file = event.target.files[0];
-    
+
     // Check if a file is selected
     if (!file) {
         // Handle case where no file is selected
@@ -32,18 +122,22 @@ const handleFileChange = (event, fieldName) => {
 
     // Check file type
     if (!ALLOWED_FILE_TYPES.includes(file.type)) {
-        Error.value='Please upload an image (JPEG or PNG) or a PDF file.';
+        Error.value = 'Please upload an image (JPEG or PNG) or a PDF file.';
         return;
     }
 
     // Check file size
     const fileSizeMB = file.size / (1024 * 1024); // Convert bytes to MB
     if (fileSizeMB > MAX_FILE_SIZE_MB) {
-        Error.value=`File size exceeds the limit of ${MAX_FILE_SIZE_MB} MB.`
+        Error.value = `File size exceeds the limit of ${MAX_FILE_SIZE_MB} MB.`
         return;
     }
 
     // If file passes all checks, update the form data
+    
+    if (form[fieldName] &&form[fieldName].id) {
+        form.deleted.push(form.cnic);
+    }
     form[fieldName] = file;
 };
 
@@ -55,17 +149,32 @@ const Submit = () => {
     form.post(`/user/dashboard/sole-proprietorship/upload-docs/${SP.id}`);
 }
 const RemoveCnic = () => {
+    if (form.cnic.id) {
+        form.deleted.push(form.cnic);
+    }
     form.cnic = null;
 }
 
 const RemoveLetterHead = () => {
+    if (form.letterhead.id) {
+        form.deleted.push(form.letterhead);
+    }
     form.letterhead = null;
+
 }
 const RemoveRentalAgreement = () => {
+    if (form.rental_agreement.id) {
+        form.deleted.push(form.rental_agreement);
+    }
     form.rental_agreement = null;
+
 }
 const RemoveUtilityBill = () => {
+    if (form.utility_bill.id) {
+        form.deleted.push(form.utility_bill);
+    }
     form.utility_bill = null;
+
 }
 </script>
 

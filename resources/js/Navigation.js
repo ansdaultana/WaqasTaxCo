@@ -28,7 +28,6 @@ const gotoDashboard=()=>{
 }
 const sole_prop_upload_docs=(id)=>
 {
-    console.log(id)
 
     router.get(`/user/dashboard/sole-proprietorship/upload-docs/${id}`);
 
