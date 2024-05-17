@@ -4,7 +4,8 @@ import { router } from '@inertiajs/vue3';
 const deleteCartItem=(id,item)=>{
   
     const data = {
-        name: item.name ,
+        type: item.type ,
+        deleteItemId: item.id,
       };
       router.post(`/user/dashboard/cart/delete-item/${id}`, data)
       .catch(error => {

@@ -16,7 +16,7 @@ const logout=()=>{
 }
 
 const gotoHome=()=>{
-    router.get('/');
+    router.get('/user/dashboard');
 }
 
 const gotoCardsRequiredUrl=(url)=>{

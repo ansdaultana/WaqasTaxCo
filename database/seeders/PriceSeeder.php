@@ -18,5 +18,10 @@ class PriceSeeder extends Seeder
              'service_name' => 'NTN',
              'price' => 5000,
          ]);
+         \App\Models\Price::factory()->create([
+            'id'=>2,
+             'service_name' => 'sole_proprietorship',
+             'price' => 25000,
+         ]);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\NTN;
 use App\Models\Price;
+use App\Models\SoleProprietorship;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -17,41 +18,58 @@ class CartController extends Controller
         $user = auth()->user();
         $cart = Cart::where('user_id', $user->id)->first();
         if ($cart) {
-            $cartItem = NTN::find($cart->ntn_id);
-            if ($cartItem) {
-                $ntnPrice = Price::where('service_name', 'NTN')->value('price');
-                $cartItem['name'] = 'NTN';
-                $cartItem['price'] = $ntnPrice ?? 0;
-                $cartItems[] = $cartItem;
+            if ($cart->ntn_id) {
+                $cartItem = NTN::find($cart->ntn_id);
+                if ($cartItem) {
+                    $ntnPrice = Price::where('service_name', 'NTN')->value('price');
+                    $cartItem['name'] = 'NTN';
+                    $cartItem['type'] = 'NTN';
+                    $cartItem['price'] = $ntnPrice ?? 0;
+                    $cartItems[] = $cartItem;
+                }
+            }
+
+            // Handle Sole Proprietorship item
+            foreach ($cart->sole_proprietorships as $soleProprietorship) {
+                $spPrice = Price::where('service_name', 'sole_proprietorship')->value('price');
+                $soleProprietorship['name'] =  $soleProprietorship['name'].' Sole Prop';
+                $soleProprietorship['type'] = 'Sole Proprietorship';
+                $soleProprietorship['price'] = $spPrice ?? 0;
+                $cartItems[] = $soleProprietorship;
             }
         }
-
         return Inertia::render(
             'User/Cart',
             [
                 'cart' => $cart,
                 'cartItems' => $cartItems ?? [], // Provide an empty array if $cartItems is null
-                'isEmpty' => empty($cartItems) 
+                'isEmpty' => empty($cartItems)
             ]
         );
     }
 
     public function delete(Request $request, $id)
     {
-        $name = $request->input('name');
+        $type = $request->input('type');
         $user = auth()->user();
-        if ($name === 'NTN') {
-            // Find the cart item
-            $cart = Cart::findOrFail($id);
-            // If the cart item exists and has an NTN ID
+        $cart = Cart::findOrFail($id);
+        if ($type === 'NTN') {
             if ($cart->ntn_id) {
-                // Retrieve the NTN associated with the cart item
                 $ntn = NTN::findOrFail($cart->ntn_id);
-
-                // Delete the NTN
                 $ntn->delete();
                 $cart->ntn_id = null;
                 $cart->save();
+            }
+        }
+        elseif ($type === 'Sole Proprietorship') {
+            $soleProprietorshipId = $request->input('deleteItemId');
+            // If the cart item exists and has a Sole Proprietorship ID
+            if ($cart->sole_proprietorships()->where('sole_proprietorship_id', $soleProprietorshipId)->exists()) {
+                // Remove the Sole Proprietorship from the pivot table
+                $cart->sole_proprietorships()->detach($soleProprietorshipId);
+                // Optionally delete the Sole Proprietorship record itself
+                $sp=SoleProprietorship::findOrFail($soleProprietorshipId);
+                $sp->delete();
             }
         }
         return redirect(route('user.cart'));

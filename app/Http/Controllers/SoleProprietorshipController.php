@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Image;
 use App\Models\Pdf;
 use App\Models\SoleProprietorship;
@@ -58,82 +59,133 @@ class SoleProprietorshipController extends Controller
     }
 
     public function upload_docs(Request $request, $id)
-    {
+{
+    // Validate only when the update flag is false
+    if ($request->has('update') && $request->input('update') === false) {
+        $rules = [
+            'cnic' => 'required|file|mimes:jpeg,png,pdf|max:5120', // Max size in kilobytes (5MB)
+            'letterhead' => 'required|file|mimes:jpeg,png,pdf|max:5120',
+            'utility_bill' => 'required|file|mimes:jpeg,png,pdf|max:5120',
+            'rental_agreement' => 'required|file|mimes:jpeg,png,pdf|max:5120',
+        ];
 
-        if ($request->has('update') && $request->input('update') === false) {
-            $rules = [
-                'cnic' => 'required|file|mimes:jpeg,png,pdf|max:5120', // Max size in kilobytes (5MB)
-                'letterhead' => 'required|file|mimes:jpeg,png,pdf|max:5120',
-                'utility_bill' => 'required|file|mimes:jpeg,png,pdf|max:5120',
-                'rental_agreement' => 'required|file|mimes:jpeg,png,pdf|max:5120',
-            ];
+        $request->validate($rules);
+    }
 
-            $request->validate($rules);
+    $user = auth()->user();
+    if (!$user) {
+        return; // or handle unauthorized access
+    }
 
+    $imageFiles = [];
+    $pdfFiles = [];
+    $deleted = [];
+
+    // Handle deleted files
+    if ($request->has('deleted')) {
+        $deleted = $request->input('deleted');
+    }
+
+    foreach ($deleted as $file) {
+        if ($file['type'] == 'pdf') {
+            $pdf = Pdf::findOrFail($file['id']);
+            $pdf->delete();
+        } else {
+            $image = Image::findOrFail($file['id']);
+            $image->delete();
         }
+    }
 
-        $imageFiles = [];
-        $pdfFiles = [];
-        $deleted = [];
-        if ($request->has('deleted')) {
-            $deleted = $request->input('deleted');
-        }
-        foreach ($deleted as $key => $file) {
-            if($file['type']=='pdf')
-            {
-                $pdf = Pdf::findOrFail($file['id']);
-                $pdf->delete();
-            }
-            else
-            {
-                $image = Image::findOrFail($file['id']);
-                $image->delete();
-            }
-        }
-        foreach ($request->allFiles() as $key => $file) {
-            if (in_array($key, ['cnic', 'letterhead', 'utility_bill', 'rental_agreement']) && in_array($file->getClientOriginalExtension(), ['jpeg', 'jpg', 'png'])) {
+    // Separate image and pdf files
+    foreach ($request->allFiles() as $key => $file) {
+        if (in_array($key, ['cnic', 'letterhead', 'utility_bill', 'rental_agreement'])) {
+            if (in_array($file->getClientOriginalExtension(), ['jpeg', 'jpg', 'png'])) {
                 $imageFiles[$key] = $file;
-            } elseif (in_array($key, ['cnic', 'letterhead', 'utility_bill', 'rental_agreement']) && $file->getClientOriginalExtension() == 'pdf') {
+            } elseif ($file->getClientOriginalExtension() == 'pdf') {
                 $pdfFiles[$key] = $file;
             }
         }
-        foreach ($imageFiles as $key => $file) {
-            $path = $file->store('sole_proprietorship_data', 'local');
-            Image::create([
-                'sole_proprietorship_id' => $id,
-                'path' => $path,
-                'what_for' => $key,
-                'name' => $file->getClientOriginalName()
-            ]);
-        }
-        foreach ($pdfFiles as $key => $file) {
-            $path = $file->store('sole_proprietorship_data', 'local');
-            Pdf::create([
-                'sole_proprietorship_id' => $id,
-                'path' => $path,
-                'what_for' => $key,
-                'name' => $file->getClientOriginalName()
-            ]);
-        }
-        return redirect(route('user.dashboard'));
     }
 
-    public function delete(Request $request,$id)
-    {
-        $SP = SoleProprietorship::findOrFail($id);
-        if (!$SP) {
-            return;
-        }
-        $images = Image::where('sole_proprietorship_id', $SP->id)->get();
-        $pdfs = Pdf::where('sole_proprietorship_id', $SP->id)->get();
-        foreach ($images as $image) {
-            $image->delete();
-        }
-        foreach ($pdfs as $pdf) {
-            $pdf->delete();
-        }
-        $SP->delete();
-        return redirect(route('sole_proprietorship.index'));
-        
+    // Store image files
+    foreach ($imageFiles as $key => $file) {
+        $path = $file->store('sole_proprietorship_data', 'local');
+        Image::create([
+            'sole_proprietorship_id' => $id,
+            'path' => $path,
+            'what_for' => $key,
+            'name' => $file->getClientOriginalName()
+        ]);
     }
+
+    // Store pdf files
+    foreach ($pdfFiles as $key => $file) {
+        $path = $file->store('sole_proprietorship_data', 'local');
+        Pdf::create([
+            'sole_proprietorship_id' => $id,
+            'path' => $path,
+            'what_for' => $key,
+            'name' => $file->getClientOriginalName()
+        ]);
+    }
+
+    $SP = SoleProprietorship::findOrFail($id);
+    if (!$SP) {
+        return; // or handle not found
+    }
+
+    // Handle cart associations
+    if (!$user->cart) {
+        $cart = Cart::create([
+            'user_id' => $user->id,
+        ]);
+    } else {
+        $cart = $user->cart;
+    }
+
+    // Add sole proprietorship to the cart
+    if (!$cart->sole_proprietorships()->where('sole_proprietorship_id', $SP->id)->exists()) {
+        $cart->sole_proprietorships()->attach($SP->id);
+    }
+
+    return redirect()->route('user.cart');
+}
+
+    
+
+public function delete(Request $request, $id)
+{
+    // Find the sole proprietorship record or fail
+    $SP = SoleProprietorship::findOrFail($id);
+
+    // Get associated images and PDFs
+    $images = Image::where('sole_proprietorship_id', $SP->id)->get();
+    $pdfs = Pdf::where('sole_proprietorship_id', $SP->id)->get();
+
+    // Delete associated images
+    foreach ($images as $image) {
+        $image->delete();
+    }
+
+    // Delete associated PDFs
+    foreach ($pdfs as $pdf) {
+        $pdf->delete();
+    }
+
+    // Find and detach the SP from any cart
+    $carts = Cart::whereHas('soleProprietorships', function ($query) use ($SP) {
+        $query->where('sole_proprietorship_id', $SP->id);
+    })->get();
+
+    foreach ($carts as $cart) {
+        $cart->sole_proprietorships()->detach($SP->id);
+    }
+
+    // Delete the sole proprietorship
+    $SP->delete();
+
+    // Redirect to the sole proprietorship index page
+    return redirect()->route('sole_proprietorship.index');
+}
+
 }

@@ -27,4 +27,9 @@ class SoleProprietorship extends Model
     {
         return $this->hasMany(Pdf::class);
     }
+
+    public function carts()
+    {
+        return $this->belongsToMany(Cart::class, 'cart_sole_proprietorship');
+    }
 }
