@@ -1,9 +1,11 @@
 <script setup>
 import userlayout from '@/Layouts/User/Layout.vue';
-import { ref, computed } from 'vue';
+import { ref,computed } from 'vue';
 import BlueButton from '../../../Components/BlueButton.vue';
 import { Head, usePage, useForm } from '@inertiajs/vue3';
-import { sole_prop_upload_docs } from '@/Navigation.js'
+import { aop_upload_docs } from '@/Navigation.js'
+import DeleteButton from '@/Components/DeleteButton.vue';
+import {deleteAop} from '@/ActionsApi';
 
 defineOptions({
     layout: userlayout,
@@ -12,7 +14,7 @@ defineOptions({
 
 const page = usePage();
 const UserDetails = page.props.UserDetails;
-const sole_proprietorships = page.props.sole_proprietorships;
+const Aops = computed(()=>page.props.Aops);
 const newReg = ref(page.props.newReg || false);
 const form = useForm({
     name: '',
@@ -21,13 +23,13 @@ const form = useForm({
 });
 
 const Submit = () => {
-    form.post(route('sole_proprietorship.register'), {
+    form.post(route('aop.register'), {
     });
 }
-const gotoSoleProprietorship = (id) => {
-    sole_prop_upload_docs(id);
+const gotonewAop = (id) => {
+    aop_upload_docs(id);
 }
-const GotoNewSoleProp = () => {
+const gotoAop = () => {
     newReg.value = true;
 }
 </script>
@@ -53,7 +55,7 @@ const GotoNewSoleProp = () => {
                         <div class="   items-center justify-center md:p-3 text-sm  md:text-lg">
                             <div class="text-blue-500 p-2 md:p-0 font-bold ">
 
-                                Please Enter Details About Your Business
+                                Please Enter Details About Your Aop / Partnership
                             </div>
                         </div>
 
@@ -106,24 +108,24 @@ const GotoNewSoleProp = () => {
                             </div>
                         </div>
                         <div class="my-7">
-                            <div   v-for="sole_proprietorship in sole_proprietorships">
+                            <div v-for="Aop in Aops">
                                 <div
                                     class="flex mt-2 md:m-4 items-center p-3  bg-slate-100 rounded-lg justify-between  transition-transform hover:scale-103 duration-300">
-                                    <span v-text="sole_proprietorship['name']"></span>
-                                    <div>
+                                    <span v-text="Aop['name']"></span>
+                                    <div class="flex gap-x-2">
                                         <BlueButton text="Continue"
-                                            @click.prevent="gotoSoleProprietorship(sole_proprietorship['id'])" />
-                                    <div>
-                                        
-                                    </div>
+                                            @click.prevent="gotonewAop(Aop['id'])" />
+                                        <div>
+                                            <DeleteButton @click.prevent="deleteAop(Aop['id'])" />
                                         </div>
-                                    
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
-                      
+
                         <div class="flex items-center justify-end mt-10 ">
-                            <BlueButton text="Register  New" @click.prevent="GotoNewSoleProp" />
+                            <BlueButton text="Register  New" @click.prevent="gotoAop" />
 
                         </div>
                     </div>

@@ -136,7 +136,7 @@ const handleFileChange = (event, fieldName) => {
     // If file passes all checks, update the form data
     
     if (form[fieldName] &&form[fieldName].id) {
-        form.deleted.push(form.cnic);
+        form.deleted.push(form[fieldName]);
     }
     form[fieldName] = file;
 };

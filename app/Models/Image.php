@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Image extends Model
 {
     use HasFactory;
-    protected $fillable = ['ntn_id','sole_proprietorship_id','path','what_for','name'];
+    protected $fillable = ['ntn_id','sole_proprietorship_id','path','what_for','name','aop_id'];
 
     public function ntn()
     {

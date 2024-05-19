@@ -22,7 +22,7 @@ defineOptions({
         <div class="flex  items-center justify-center my-10">
             <div class="grid grid-cols-4 gap-x-20 gap-y-10 ">
                 <Card title="Sole Proprietor" url="sole-proprietorship"/>
-                <Card title="AOP / Partnership" url="aop-partnership"/>
+                <Card title="AOP / Partnership" url="aop"/>
                 <Card title="Add Business to NTN" url="add-business-to-ntn"/>
                 <Card title="Remove Business from NTN" url="remove-business-from-ntn"/>
             </div>

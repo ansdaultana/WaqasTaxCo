@@ -21,4 +21,9 @@ class Cart extends Model
     {
         return $this->belongsToMany(SoleProprietorship::class,'cart_sole_proprietorship');
     }
+
+    public function aops()
+    {
+        return $this->belongsToMany(Aop::class, 'cart_aop');
+    }
 }

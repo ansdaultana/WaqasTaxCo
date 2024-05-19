@@ -32,4 +32,10 @@ const sole_prop_upload_docs=(id)=>
     router.get(`/user/dashboard/sole-proprietorship/upload-docs/${id}`);
 
 }
-export { gotoSignIn,  gotoRegister,gotoHome,logout,gotoCardsRequiredUrl,gotoDashboard,sole_prop_upload_docs };
+const aop_upload_docs=(id)=>
+{
+
+    router.get(`/user/dashboard/aop/upload-docs/${id}`);
+
+}
+export { gotoSignIn,  gotoRegister,gotoHome,logout,gotoCardsRequiredUrl,gotoDashboard,sole_prop_upload_docs,aop_upload_docs };

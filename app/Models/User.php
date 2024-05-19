@@ -69,8 +69,12 @@ class User extends Authenticatable
         return $this->hasOne(Cart::class);
     }
 
-    public function sole_proprietorship()
+    public function sole_proprietorships()
     {
         return $this->hasMany(SoleProprietorship::class);
+    }
+    public function aops()
+    {
+        return $this->hasMany(Aop::class);
     }
 }

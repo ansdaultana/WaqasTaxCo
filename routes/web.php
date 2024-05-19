@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AopController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\IncorporationController;
 use App\Http\Controllers\NTNController;
@@ -73,5 +74,16 @@ Route::middleware('auth')->prefix('/user/dashboard')->group(function () {
 
     Route::get('/sole-proprietorship/upload-docs/{id}',[SoleProprietorshipController::class,'upload_docs_page'])->name('sole_proprietorship.upload_docs_page');
     Route::post('/sole-proprietorship/upload-docs/{id}',[SoleProprietorshipController::class,'upload_docs']);
+
+
+    // AOP
+    Route::get('/aop',[IncorporationController::class,'aop'])->name('aop.index');
+    Route::post('/aop/register',[AopController::class,'register'])->name('aop.register');
+    Route::post('/aop/delete/{id}',[AopController::class,'delete']);
+
+    Route::get('/aop/upload-docs/{id}',[AopController::class,'upload_docs_page'])->name('Aop.upload_docs_page');
+    Route::post('/aop/upload-docs/{id}',[AopController::class,'upload_docs']);
+
+
 
 });

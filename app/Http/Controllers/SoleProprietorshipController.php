@@ -84,8 +84,7 @@ class SoleProprietorshipController extends Controller
     // Handle deleted files
     if ($request->has('deleted')) {
         $deleted = $request->input('deleted');
-    }
-
+        
     foreach ($deleted as $file) {
         if ($file['type'] == 'pdf') {
             $pdf = Pdf::findOrFail($file['id']);
@@ -95,6 +94,8 @@ class SoleProprietorshipController extends Controller
             $image->delete();
         }
     }
+    }
+
 
     // Separate image and pdf files
     foreach ($request->allFiles() as $key => $file) {

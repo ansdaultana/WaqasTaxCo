@@ -38,4 +38,12 @@ const deleteSoleProprietorship=(id)=>{
     });
 };
 
-export { deleteCartItem,  CalculateSalaryTax, FindNTN,deleteSoleProprietorship};
+
+const deleteAop=(id)=>{
+
+  router.post(`/user/dashboard/aop/delete/${id}`)
+  .catch(error => {
+    console.error('There was a problem with the fetch operation:', error);
+  });
+};
+export { deleteCartItem,  CalculateSalaryTax, FindNTN,deleteSoleProprietorship,deleteAop};

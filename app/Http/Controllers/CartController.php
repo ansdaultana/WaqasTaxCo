@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Aop;
 use App\Models\Cart;
 use App\Models\NTN;
 use App\Models\Price;
@@ -37,6 +38,13 @@ class CartController extends Controller
                 $soleProprietorship['price'] = $spPrice ?? 0;
                 $cartItems[] = $soleProprietorship;
             }
+            foreach ($cart->aops as $aop) {
+                $aopPrice = Price::where('service_name', 'aop')->value('price');
+                $aop['name'] =  $aop['name'].' AOP';
+                $aop['type'] = 'AOP';
+                $aop['price'] = $aopPrice ?? 0;
+                $cartItems[] = $aop;
+            }
         }
         return Inertia::render(
             'User/Cart',
@@ -70,6 +78,17 @@ class CartController extends Controller
                 // Optionally delete the Sole Proprietorship record itself
                 $sp=SoleProprietorship::findOrFail($soleProprietorshipId);
                 $sp->delete();
+            }
+        }
+        elseif ($type === 'AOP') {
+            $aopId = $request->input('deleteItemId');
+            // If the cart item exists and has a Sole Proprietorship ID
+            if ($cart->aops()->where('aop_id', $aopId)->exists()) {
+                // Remove the Sole Proprietorship from the pivot table
+                $cart->aops()->detach($aopId);
+                // Optionally delete the Sole Proprietorship record itself
+                $aop=Aop::findOrFail($aopId);
+                $aop->delete();
             }
         }
         return redirect(route('user.cart'));
